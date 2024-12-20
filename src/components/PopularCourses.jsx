@@ -153,8 +153,13 @@ const CourseCard = ({ course }) => {
 
 const PopularCourses = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const itemsPerPage =
-    window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+
+  let itemsPerPage = 3;
+  if (typeof window !== "undefined") {
+    itemsPerPage =
+      window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+  }
+
   const totalSlides = Math.ceil(courses.length / itemsPerPage);
 
   const nextSlide = () => {
@@ -172,17 +177,20 @@ const PopularCourses = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const newItemsPerPage =
-        window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-      const newTotalSlides = Math.ceil(courses.length / newItemsPerPage);
+      if (typeof window !== "undefined") {
+        const newItemsPerPage =
+          window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        const newTotalSlides = Math.ceil(courses.length / newItemsPerPage);
 
-      if (currentSlide >= newTotalSlides) {
-        setCurrentSlide(newTotalSlides - 1);
+        if (currentSlide >= newTotalSlides) {
+          setCurrentSlide(newTotalSlides - 1);
+        }
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+    }
   }, [currentSlide]);
 
   const getVisibleCourses = () => {
